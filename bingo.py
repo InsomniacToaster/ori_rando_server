@@ -57,7 +57,7 @@ class IntGoal(BingoGoal):
         self.tags = set(tags)
         if self.range_func.min < self.early_max:
             self.tags.add("early")
-        
+
 
     def to_card(self, rand, banned = {}):
         t = self.range_func()
@@ -121,14 +121,14 @@ class GoalGroup(BingoGoal):
             infix = "BOTH" if count == 2 else "EACH"
             plural = count == 2
             card.early = all([s.early for s in subgoals])
-        
+
         card.disp_name = self.name_func(infix, plural)
         for subgoal in subgoals:
             sjson = subgoal.to_json([], True)
             card.subgoals.append(sjson)
             if sjson["help_lines"]:
                 hls.append(sjson["disp_name"] + ": " + sjson["help_lines"][0])
-        
+
         card.help_lines = hls[:]
         return card
 
@@ -178,16 +178,16 @@ class BingoGenerator(object):
             BoolGoal(
                 name = "WilhelmScream",
                 disp_name = "Make Wilhelm scream",
-                help_lines = ["Throw Wilhelm (a green spitter on the top left cliff in the main Valley of the Wind room) off his cliff.", 
+                help_lines = ["Throw Wilhelm (a green spitter on the top left cliff in the main Valley of the Wind room) off his cliff.",
                         "Note: Wilhelm does not spawn unless you have the Sunstone."]
             ),
             IntGoal(
                 name = "OpenKSDoors",
                 disp_name = "Open keystone doors",
                 help_lines = [
-                    "Keystone doors by zone:", 
-                    "Glades: 2 (Spirit Caverns Access, Spirit Tree Access)" if open_world else "Glades: 3 (First Door, Spirit Caverns Access, Spirit Tree Access)", 
-                    "Grotto: 1 (Double Jump Access)", 
+                    "Keystone doors by zone:",
+                    "Glades: 2 (Spirit Caverns Access, Spirit Tree Access)" if open_world else "Glades: 3 (First Door, Spirit Caverns Access, Spirit Tree Access)",
+                    "Grotto: 1 (Double Jump Access)",
                     "Ginso: 2 (Bash Access, Ginso TP Access)",
                     "Swamp: 1 (Stomp Access)",
                     "Misty: 1 (Atsu's Torch Access)",
@@ -198,7 +198,7 @@ class BingoGenerator(object):
                 early_max = 3
             ),
             IntGoal(
-                name = "OpenEnergyDoors", 
+                name = "OpenEnergyDoors",
                 disp_name = "Open energy doors",
                 help_lines = [
                     "Energy doors by zone: ",
@@ -214,7 +214,7 @@ class BingoGenerator(object):
                 disp_name = "Break floors or ceilings",
                 help_lines = ["A floor or ceiling is a horizontal barrier that can be broken with a skill or enemy attack.",
                              "Almost half of the game's horizontal barriers are in either Sorrow or Swamp"],
-                range_func = r((4, 10), (8, 24), (20, 42))                
+                range_func = r((4, 10), (8, 24), (20, 42))
             ),
             IntGoal(
                 name = "BreakWalls",
@@ -254,7 +254,7 @@ class BingoGenerator(object):
                 disp_name = "Light Lanterns",
                 help_lines = ["The lanterns in the pre-dash area of Blackroot Burrows do not count."],
                 range_func = r((4, 6), (4, 10), (8, 14))
-            ), 
+            ),
             IntGoal(
                 name = "SpendPoints",
                 disp_name = "Spend Ability Points",
@@ -264,14 +264,15 @@ class BingoGenerator(object):
             IntGoal(
                 name = "GainExperience",
                 disp_name = "Gain spirit light",
-                help_lines = ["bonus experience gained from Spirit Light Efficiency counts."],
+                help_lines = ["bonus experience gained from Spirit Efficiency and Spirit Potency count."],
+                # I believe this is correct, but need to confirm.
                 range_func = r((12, 20), (14, 28), (20, 40), scalar = 250)
             ),
             IntGoal(
                 name = "KillEnemies",
                 disp_name = "Kill enemies",
                 help_lines = ["Large swarms count as 3 enemies (the initial swarm and the first split)"],
-                range_func = r((25, 75), (50, 125), (75, 175))                
+                range_func = r((25, 75), (50, 125), (75, 175))
             ),
             IntGoal(
                 name = "PickupsInGlades",
@@ -310,7 +311,7 @@ class BingoGenerator(object):
                 disp_name = "Collect Pickups In Swamp",
                 help_lines = ["You can use the stats feature (alt+5 by default) to see your pickup counts by zone.", "Mapstone turn-ins are not in any zone."],
                 range_func = r((4, 10), (7, 16), (11, 20)),
-                tags = ["pickups_in_zone"]                
+                tags = ["pickups_in_zone"]
             ),
             IntGoal(
                 name = "PickupsInGinso",
@@ -355,7 +356,7 @@ class BingoGenerator(object):
                 tags = ["pickups_in_zone"]
             ),
             GoalGroup(
-                name = "CompleteHoruRoom", 
+                name = "CompleteHoruRoom",
                 name_func = namef("Complete", "Horu room"),
                 help_lines = ["A room is completed when the 'lava drain' animation plays"],
                 goals = [
@@ -369,19 +370,19 @@ class BingoGenerator(object):
                     BoolGoal("R4", help_lines = ["Laser Tumbleweed Puzzle"]),
                 ],
                 methods = [
-                    ("or", r((2, 3), (1, 3), (1, 1), flat=True)), 
-                    ("and", r((1, 2), (1, 3), (2, 4), flat=True)), 
+                    ("or", r((2, 3), (1, 3), (1, 1), flat=True)),
+                    ("and", r((1, 2), (1, 3), (2, 4), flat=True)),
                     ("count", r((1, 3), (2, 4), (3, 7), flat=True))
                 ]
                 ),
             GoalGroup(
-                name = "ActivateTeleporter", 
+                name = "ActivateTeleporter",
                 name_func = namef("Activate", "spirit well"),
                 help_lines = ["Activate spirit wells by standing on them or unlocking them via pickup"],
                 goals = tpGoals, # defined above for reasons
                 methods = [
-                        ("or", r((1,2), (1,2), (1,1), flat=True)), 
-                        ("and", r((1, 2), (2, 3), (3, 4), flat=True)), 
+                        ("or", r((1,2), (1,2), (1,1), flat=True)),
+                        ("and", r((1, 2), (2, 3), (3, 4), flat=True)),
                         ("count", r((4, 7), (5, 9), (8, 11), flat=True))
                     ],
                 max_repeats = 3
@@ -399,13 +400,13 @@ class BingoGenerator(object):
                     BoolGoal("Ginso Tree", help_lines = ["Requires the Water Vein or Ginso TP"], tags = ["no_singleton"])
                 ],
                 methods = [
-                    ("or", r((2, 3), (2, 2), (1, 1), flat=True)), 
+                    ("or", r((2, 3), (2, 2), (1, 1), flat=True)),
                     ("and", r((1, 1), (1, 2), (2, 3), flat=True))
                 ],
                 max_repeats = 2
                 ),
             GoalGroup(
-                name = "GetItemAtLoc", 
+                name = "GetItemAtLoc",
                 name_func = namef("Get", "pickup"),
                 help_lines = ["Collect the pickups in these locations"],
                 goals = [
@@ -424,7 +425,7 @@ class BingoGenerator(object):
                     BoolGoal(name = "ForlornEscapePlant", disp_name = "Forlorn Escape Plant", help_lines = ["The plant in Forlorn Escape (Missable if you start the escape but don't complete it!)"])
                 ],
                 methods = [
-                    ("or", r((2, 3), (1, 2), (1, 1), flat=True)), 
+                    ("or", r((2, 3), (1, 2), (1, 1), flat=True)),
                     ("and", r((1, 1), (2, 3), (2, 4), flat=True))
                 ],
                 max_repeats = 2
@@ -435,24 +436,24 @@ class BingoGenerator(object):
                 help_lines = ["'Tree' refers to a location where a skill is gained in the base game (Kuro's feather counts as a tree). For consistency with the randomizer, Sein / Spirit Flame does not count as a tree."],
                 goals = [BoolGoal(name) for name in ["Wall Jump", "Charge Flame", "Double Jump", "Bash", "Stomp", "Glide", "Climb", "Charge Jump", "Grenade", "Dash"]],
                 methods = [
-                        ("or",    r((1, 3), (1, 2), (1, 1), flat=True)), 
-                        ("and",   r((1, 2), (2, 3), (3, 4), flat=True)), 
+                        ("or",    r((1, 3), (1, 2), (1, 1), flat=True)),
+                        ("and",   r((1, 2), (2, 3), (3, 4), flat=True)),
                         ("count", r((4, 6), (4, 8), (7, 10), flat=True))
                     ],
                 max_repeats = 2
                 ),
             GoalGroup(
-                name = "GetAbility", 
+                name = "GetAbility",
                 name_func = namef("Level up", "ability", plural_form = "abilities"),
-                goals = [BoolGoal(name, help_lines = ["requires %s ability points" % cost]) for name, cost in [("Ultra Defense", 19), ("Spirit Light Efficiency", 10), ("Ultra Stomp", 10)]],
+                goals = [BoolGoal(name, help_lines = ["requires %s ability points" % cost]) for name, cost in [("Ultra Defense", 19), ("Spirit Potency", 10), ("Ultra Stomp", 10)]],
                 methods = [
-                    ("or", r((2, 2), (1, 2), (1, 1), flat=True)), 
+                    ("or", r((2, 2), (1, 2), (1, 1), flat=True)),
                     ("and", r((1, 1), (1, 2), (2, 3), flat=True))
                 ],
                 max_repeats = 1
                 ),
             GoalGroup(
-                name = "StompPeg", 
+                name = "StompPeg",
                 name_func = namef("Stomp", "peg"),
                 help_lines = ["Pegs must be fully stomped to count; Using a Fronkey to stomp a peg is permitted"],
                 goals = [
@@ -545,7 +546,7 @@ class BingoGenerator(object):
                 IntGoal(
                     name = "HealthCellLocs",
                     disp_name = "Get pickups from Health Cells",
-                    help_lines = ["Collect pickups from this many vanilla health cell locations."],                    
+                    help_lines = ["Collect pickups from this many vanilla health cell locations."],
                     range_func = r((4, 7), (4, 9), (8, 11)),
                     early_max = 7
                     ),
@@ -572,12 +573,12 @@ class BingoGenerator(object):
                 GoalGroup(
                     name = "VanillaEventLocs",
                     name_func = namef("Visit", "event location"),
-                    help_lines = ["The event locations are where the 3 dungeon keys and Clean Water, Wind Restored, and Warmth Returned are obtained in the base game.", 
+                    help_lines = ["The event locations are where the 3 dungeon keys and Clean Water, Wind Restored, and Warmth Returned are obtained in the base game.",
                                  "Visiting an event location requires getting (and keeping) the pickup at that location."],
                     goals = [BoolGoal(name) for name in ["Water Vein", "Gumon Seal", "Sunstone", "Clean Water", "Wind Restored", "Warmth Returned"]],
                     methods = [
-                        ("or",    r((1, 2), (1, 2), (1, 1))), 
-                        ("and",   r((1, 1), (1, 2), (2, 3))), 
+                        ("or",    r((1, 2), (1, 2), (1, 1))),
+                        ("and",   r((1, 1), (1, 2), (2, 3))),
                     ],
                     max_repeats = 2
                     ),
@@ -588,8 +589,8 @@ class BingoGenerator(object):
                                   "If you can't find a key and your keymode is not clues, consider making your next (and all future) bingo seeds with keymode clues."],
                     goals = [BoolGoal(name) for name in ["Water Vein", "Gumon Seal", "Sunstone"]],
                     methods = [
-                        ("or",    r((1, 2), (1, 2), (1, 1))), 
-                        ("and",   r((1, 1), (1, 2), (2, 3))), 
+                        ("or",    r((1, 2), (1, 2), (1, 1))),
+                        ("and",   r((1, 1), (1, 2), (2, 3))),
                     ],
                     max_repeats = 1
                 ),
@@ -609,8 +610,8 @@ class BingoGenerator(object):
                         BoolGoal(name = "mountHoru", disp_name = "Horu"),
                     ],
                 methods = [
-                        ("or",    r((1, 3), (1, 2), (1, 1), flat=True)), 
-                        ("and",   r((1, 2), (2, 3), (3, 4), flat=True)), 
+                        ("or",    r((1, 3), (1, 2), (1, 1), flat=True)),
+                        ("and",   r((1, 2), (2, 3), (3, 4), flat=True)),
                         ("count", r((3, 6), (4, 8), (6, 9), flat=True))
                     ],
                 max_repeats = 2
@@ -675,7 +676,7 @@ class BingoGenerator(object):
                 help_lines = ["The amphibians native to Nibel are fronkeys, red spitters, and green spitters"],
                 tags = ["early"]
             ))
-        
+
         groupSeen = defaultdict(lambda: (1, [], []))
         cards = []
 #        goals = [goal for goal in goals]
@@ -711,14 +712,14 @@ class BingoGenerator(object):
             if card.goal_type == "multi":
                 banned_methods.append(card.goal_method)
                 card.goal_method = card.goal_method.strip('_')
-                banned_subgoals += [subgoal["name"] for subgoal in card.subgoals] 
+                banned_subgoals += [subgoal["name"] for subgoal in card.subgoals]
             groupSeen[goal.name] = (repeats+1, banned_subgoals, banned_methods)
             cards.append(card)
         rand.shuffle(cards)
         i = 0
         for card in cards:
             card.square = i
-            i += 1                
+            i += 1
         return cards
 
 # handlers
@@ -789,7 +790,7 @@ class BingoCreate(RequestHandler):
         if start_with:
             mu_line = "2|MU|%s|Glades" % start_with.id
             base.insert(1, mu_line)
-        
+
         game = key.get()
         d = int(param_val(self, "discCount") or 0)
         bingo = BingoGameData(
@@ -840,7 +841,7 @@ class BingoCreate(RequestHandler):
         bkey = bingo.put()
         game.bingo_data = bkey
         game.put()
- 
+
 class AddBingoToGame(RequestHandler):
     def get(self, game_id):
 
@@ -1023,7 +1024,7 @@ class BingoStartCountdown(RequestHandler):
                         log.error("team %s did not have %s players!", team, p.players)
                         return resp_error(self, 412, "Not all teams have the correct number of players!", "text/plain")
         bingo.start_time = datetime.utcnow() + timedelta(seconds=15)
-        startStr = "miscBingo Game %s started!" % game_id        
+        startStr = "miscBingo Game %s started!" % game_id
         bingo.event_log.append(BingoEvent(event_type=startStr, timestamp=bingo.start_time))
         res = bingo.get_json()
         bingo.put()
